@@ -1,0 +1,33 @@
+/node_modules/
+
+# VS Code extension test downloads
+/.vscode-test/
+
+# Packaged extension
+*.vsix
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local artifact library data
+/artifacts.json
+
+# Generated test and lint output
+/coverage/
+/.nyc_output/
+.eslintcache
+
+# Package-manager logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Operating-system and editor temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~

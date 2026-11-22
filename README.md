@@ -1,65 +1,53 @@
-# artifact-workbench README
+# Artifact Workbench
 
-This is the README for your extension "artifact-workbench". After writing up a brief description, we recommend including the following sections.
+Artifact Workbench saves selected editor text as an artifact in the library used by the Artifact Drawer extension.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- Create an artifact from the current text selection.
+- Add the artifact to an existing category or create a category.
+- Save the artifact's title, type, and selected text to the shared library.
 
-For example if there is an image subfolder under your extension project workspace:
+## Usage
 
-\!\[feature X\]\(images/feature-x.png\)
+1. Select the text to save in an editor.
+2. Open the Command Palette (`Ctrl+Shift+P` on Windows/Linux or `Cmd+Shift+P` on macOS).
+3. Run **Create from Selection**.
+4. Choose a category or create one, then enter the artifact title and type.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+The extension displays a warning if there is no active editor or no selected text. Canceling any prompt stops the operation.
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- Visual Studio Code 1.146.0 or later.
+- The [Artifact Drawer](https://marketplace.visualstudio.com/items?itemName=aem2create.artifact-drawer) extension. VS Code installs it as a dependency.
 
-## Extension Settings
+## Shared library file
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+Artifact Workbench reads and writes the Artifact Drawer library file. If the `artifact-drawer.db-file` setting contains a path, that file is used. Otherwise, the extension uses `artifacts.json` in the Artifact Drawer extension's global storage directory. A missing file is created automatically.
 
-For example:
+To share a custom file, configure `artifact-drawer.db-file` in the Artifact Drawer settings. Both extensions should use the same path.
 
-This extension contributes the following settings:
+The file must contain a schema version 1 library object, for example:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+```json
+{
+  "schemaVersion": 1,
+  "categories": [
+    {
+      "title": "Code snippets",
+      "artifacts": [
+        {
+          "title": "Example",
+          "type": "JavaScript",
+          "snippet": "console.log('Hello');"
+        }
+      ]
+    }
+  ]
+}
+```
 
-## Known Issues
+## Extension settings
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Artifact Workbench does not contribute its own settings. The shared file path is configured with the Artifact Drawer extension's `artifact-drawer.db-file` setting.

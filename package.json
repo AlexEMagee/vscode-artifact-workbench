@@ -39,5 +39,8 @@
   "dependencies": {
     "artifact-package": "github:AlexEMagee/artifact-package",
     "vscode-extension-utilities": "github:AlexEMagee/vscode-extension-utilities"
-  }
+  },
+  "extensionDependencies": [
+    "aem2create.artifact-drawer"
+  ]
 }

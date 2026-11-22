@@ -8,7 +8,8 @@ const config = {
 	dataFile: {
 		filename: "artifacts.json",
 		settingName: "db-file",
-		extensionName: "artifact-workbench"
+		extensionName: "artifact-drawer",
+		fallbackDirectory: "aem2create.artifact-drawer"
 	}
 }
 
@@ -20,7 +21,8 @@ function activate(context) {
 		context,
 		config.dataFile.filename,
 		config.dataFile.settingName,
-		config.dataFile.extensionName
+		config.dataFile.extensionName,
+		config.dataFile.fallbackDirectory
 	);
 
 	fs.mkdirSync(path.dirname(dataFile), { recursive: true });
@@ -28,12 +30,9 @@ function activate(context) {
 		fs.writeFileSync(dataFile, JSON.stringify({ schemaVersion: 1, categories: [] }), 'utf8');
 	}
 
-	console.log(fs.readFileSync(dataFile, 'utf8'));
-
-	const artifactLibrary = Library.fromJSON(fs.readFileSync(dataFile, 'utf8'));
-
 	const disposable = vscode.commands.registerCommand('artifact-workbench.createFromSelection', async function () {
 		try {
+			const artifactLibrary = Library.fromJSON(fs.readFileSync(dataFile, 'utf8'));
 			const editor = vscode.window.activeTextEditor;
 			if(!editor) {
 				vscode.window.showWarningMessage('Open an editor and select text before creating an artifact.');
@@ -48,6 +47,7 @@ function activate(context) {
 			const categoryChoices = artifactLibrary.getCategories();
 			categoryChoices.push('Create a new category');
 
+			let createCategoryFlag = false;
 			let category = await vscode.window.showQuickPick(categoryChoices, {
 				placeHolder: 'Select an artifact category'
 			});
@@ -64,7 +64,7 @@ function activate(context) {
 					return false;
 				}
 
-				artifactLibrary.addCategory(category);
+				createCategoryFlag = true;
 			}
 
 			const title = await vscode.window.showInputBox({
@@ -89,6 +89,10 @@ function activate(context) {
 				type,
 				snippet: editor.document.getText(selection)
 			};
+
+			if(createCategoryFlag) {
+				artifactLibrary.addCategory(category);
+			}
 
 			artifactLibrary.addArtifactToCategory(
 				artifact.category,

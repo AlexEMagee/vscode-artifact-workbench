@@ -5,6 +5,7 @@
   "description": "A toolkit for creating and organizing an artifact library.",
   "version": "0.0.1",
   "icon": "images/icon.png",
+  "repository": "github.com:AlexEMagee/vscode-artifact-workbench",
   "engines": {
     "vscode": "^1.146.0"
   },

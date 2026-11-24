@@ -30,6 +30,7 @@
         "toolReferenceName": "artifactCreateCategory",
         "inputSchema": {
           "type": "object",
+          "required": ["category"],
           "properties": {
             "category": {
               "type": "string",
@@ -46,6 +47,7 @@
         "toolReferenceName": "artifactRemoveCategory",
         "inputSchema": {
           "type": "object",
+          "required": ["category"],
           "properties": {
             "category": {
               "type": "string",
@@ -62,6 +64,7 @@
         "toolReferenceName": "artifactCreateArtifact",
         "inputSchema": {
           "type": "object",
+          "required": ["category", "artifact", "type", "snippet"],
           "properties": {
             "category": {
               "type": "string",
@@ -90,6 +93,7 @@
         "toolReferenceName": "artifactModifyArtifact",
         "inputSchema": {
           "type": "object",
+          "required": ["category", "artifact"],
           "properties": {
             "category": {
               "type": "string",
@@ -101,18 +105,15 @@
             },
             "name": {
               "type": "string",
-              "description": "new artifact name. e.g. form input (first name), carousel container, carousel-slide",
-              "default": null
+              "description": "new artifact name. e.g. form input (first name), carousel container, carousel-slide"
             },
             "type": {
               "type": "string",
-              "description": "the type of code snippet of the artifact. e.g. html, css, js",
-              "default": null
+              "description": "the type of code snippet of the artifact. e.g. html, css, js"
             },
             "snippet": {
               "type": "string",
-              "description": "the code snippet to be included in the artifact",
-              "default": null
+              "description": "the code snippet to be included in the artifact"
             }
           }
         }
@@ -125,6 +126,7 @@
         "toolReferenceName": "artifactRemoveArtifact",
         "inputSchema": {
           "type": "object",
+          "required": ["category", "artifact"],
           "properties": {
             "category": {
               "type": "string",

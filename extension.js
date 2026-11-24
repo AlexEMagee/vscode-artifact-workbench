@@ -87,7 +87,7 @@ function activate(context) {
 				artifact.type,
 				artifact.snippet
 			);
-			saveArtifactLibrary(generateDataFile(context, config), artifactLibrary);
+			await saveArtifactLibrary(generateDataFile(context, config), artifactLibrary);
 			vscode.window.showInformationMessage(`Created artifact "${artifact.title}"`);
 			console.log('Created artifact:', artifact);
 		} catch (error) {
@@ -149,8 +149,14 @@ function generateArtifactLibrary(context, config) {
 	return Library.fromJSON(fs.readFileSync(dataFile, 'utf8'));
 }
 
-function saveArtifactLibrary(dataFile, artifactLibrary) {
+async function saveArtifactLibrary(dataFile, artifactLibrary) {
 	fs.writeFileSync(dataFile, JSON.stringify(artifactLibrary.toJSON(), null, 2), 'utf8');
+	try {
+		await vscode.commands.executeCommand('artifact-drawer.loadArtifactLibrary');
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		throw new Error(`Library was saved, but Artifact Drawer refresh failed: ${message}`);
+	}
 }
 
 // This method is called when your extension is deactivated
@@ -165,13 +171,13 @@ class CreateCategoryTool {
 		this.config = config
 	}
 
-	invoke(options) {
+	async invoke(options) {
 		
 		let result;
 		try {
 			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
 			artifactLibrary.addCategory(options.input.category);
-			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			await saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Category added successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -192,13 +198,13 @@ class RemoveCategoryTool {
 		this.config = config
 	}
 
-	invoke(options) {
+	async invoke(options) {
 		
 		let result;
 		try {
 			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
 			artifactLibrary.removeCategory(options.input.category);
-			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			await saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Category removed successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -219,13 +225,13 @@ class CreateArtifactTool {
 		this.config = config
 	}
 
-	invoke(options) {
+	async invoke(options) {
 		
 		let result;
 		try {
 			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
 			artifactLibrary.addArtifactToCategory(options.input.category, options.input.artifact, options.input.type, options.input.snippet);
-			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			await saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Artifact added successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -246,13 +252,13 @@ class ModifyArtifactTool {
 		this.config = config
 	}
 
-	invoke(options) {
+	async invoke(options) {
 		
 		let result;
 		try {
 			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
 			artifactLibrary.modifyArtifactInCategory(options.input.category, options.input.artifact, options.input.name, options.input.type, options.input.snippet);
-			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			await saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Artifact modified successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -273,13 +279,13 @@ class RemoveArtifactTool {
 		this.config = config
 	}
 
-	invoke(options) {
+	async invoke(options) {
 		
 		let result;
 		try {
 			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
 			artifactLibrary.removeArtifactFromCategory(options.input.category, options.input.artifact);
-			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			await saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Artifact removed successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -300,13 +306,13 @@ class CopyArtifactTool {
 		this.config = config
 	}
 
-	invoke(options) {
+	async invoke(options) {
 		
 		let result;
 		try {
 			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
 			artifactLibrary.copyArtifact(options.input.sourceCategory, options.input.destinationCategory, options.input.artifact);
-			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			await saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Artifact copied successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
@@ -327,13 +333,13 @@ class MoveArtifactTool {
 		this.config = config
 	}
 
-	invoke(options) {
+	async invoke(options) {
 		
 		let result;
 		try {
 			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
 			artifactLibrary.moveArtifact(options.input.sourceCategory, options.input.destinationCategory, options.input.artifact);
-			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			await saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Artifact moved successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);

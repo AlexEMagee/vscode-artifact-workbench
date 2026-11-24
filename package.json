@@ -104,15 +104,15 @@
               "description": "artifact name"
             },
             "name": {
-              "type": "string",
+              "type": ["string", "null"],
               "description": "new artifact name. e.g. form input (first name), carousel container, carousel-slide"
             },
             "type": {
-              "type": "string",
+              "type": ["string", "null"],
               "description": "the type of code snippet of the artifact. e.g. html, css, js"
             },
             "snippet": {
-              "type": "string",
+              "type": ["string", "null"],
               "description": "the code snippet to be included in the artifact"
             }
           }

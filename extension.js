@@ -17,22 +17,9 @@ const config = {
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-	const dataFile = getDataFile(
-		context,
-		config.dataFile.filename,
-		config.dataFile.settingName,
-		config.dataFile.extensionName,
-		config.dataFile.fallbackDirectory
-	);
-
-	fs.mkdirSync(path.dirname(dataFile), { recursive: true });
-	if(!fs.existsSync(dataFile)) {
-		fs.writeFileSync(dataFile, JSON.stringify({ schemaVersion: 1, categories: [] }), 'utf8');
-	}
-
 	const disposable = vscode.commands.registerCommand('artifact-workbench.createFromSelection', async function () {
 		try {
-			const artifactLibrary = Library.fromJSON(fs.readFileSync(dataFile, 'utf8'));
+			const artifactLibrary = generateArtifactLibrary(context, config);
 			const editor = vscode.window.activeTextEditor;
 			if(!editor) {
 				vscode.window.showWarningMessage('Open an editor and select text before creating an artifact.');
@@ -100,7 +87,7 @@ function activate(context) {
 				artifact.type,
 				artifact.snippet
 			);
-			fs.writeFileSync(dataFile, JSON.stringify(artifactLibrary.toJSON(), null, 2), 'utf8');
+			saveArtifactLibrary(generateDataFile(context, config), artifactLibrary);
 			vscode.window.showInformationMessage(`Created artifact "${artifact.title}"`);
 			console.log('Created artifact:', artifact);
 		} catch (error) {
@@ -112,6 +99,30 @@ function activate(context) {
 	});
 
 	context.subscriptions.push(disposable);
+}
+
+function generateDataFile(context, config) {
+	return getDataFile(
+		context,
+		config.dataFile.filename,
+		config.dataFile.settingName,
+		config.dataFile.extensionName,
+		config.dataFile.fallbackDirectory
+	);
+}
+
+function generateArtifactLibrary(context, config) {
+	const dataFile = generateDataFile(context, config);
+	fs.mkdirSync(path.dirname(dataFile), { recursive: true });
+	if(!fs.existsSync(dataFile)) {
+		fs.writeFileSync(dataFile, JSON.stringify({ schemaVersion: 1, categories: [] }), 'utf8');
+	}
+
+	return Library.fromJSON(fs.readFileSync(dataFile, 'utf8'));
+}
+
+function saveArtifactLibrary(dataFile, artifactLibrary) {
+	fs.writeFileSync(dataFile, JSON.stringify(artifactLibrary.toJSON(), null, 2), 'utf8');
 }
 
 // This method is called when your extension is deactivated

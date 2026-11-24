@@ -3,7 +3,7 @@
   "publisher": "aem2create",
   "displayName": "Artifact Workbench",
   "description": "A toolkit for creating and organizing an artifact library.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "icon": "images/icon.png",
   "repository": "github.com:AlexEMagee/vscode-artifact-workbench",
   "engines": {

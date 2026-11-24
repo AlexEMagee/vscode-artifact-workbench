@@ -113,6 +113,10 @@ function activate(context) {
 	);
 
 	context.subscriptions.push(
+		vscode.lm.registerTool('artifact-workbench_modify_artifact', new ModifyArtifactTool(context, config))
+	);
+
+	context.subscriptions.push(
 		vscode.lm.registerTool('artifact-workbench_remove_artifact', new RemoveArtifactTool(context, config))
 	);
 }
@@ -215,6 +219,33 @@ class CreateArtifactTool {
 			artifactLibrary.addArtifactToCategory(options.input.category, options.input.artifact, options.input.type, options.input.snippet);
 			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Artifact added successfully"};
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			result = {status: "failed", message};
+		}
+		return new vscode.LanguageModelToolResult([
+			new vscode.LanguageModelTextPart(JSON.stringify(result))
+		]);
+	}
+}
+
+/**
+ * @implements {vscode.LanguageModelTool<object>}
+ */
+class ModifyArtifactTool {
+	constructor(context, config) {
+		this.context = context;
+		this.config = config
+	}
+
+	invoke(options) {
+		
+		let result;
+		try {
+			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
+			artifactLibrary.modifyArtifactInCategory(options.input.category, options.input.artifact, options.input.name, options.input.type, options.input.snippet);
+			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			result = {status: "passed", message: "Artifact modified successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
 			result = {status: "failed", message};

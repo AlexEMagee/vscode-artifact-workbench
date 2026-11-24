@@ -37,6 +37,22 @@
             }
           }
         }
+      },
+      {
+        "name": "artifact-workbench_remove_category",
+        "displayName": "Remove Category",
+        "modelDescription": "Allows user to remove a category for artifacts. This tool will also delete all child artifacts of the specified category.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "artifactRemoveCategory",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "category name"
+            }
+          }
+        }
       }
     ]
   },

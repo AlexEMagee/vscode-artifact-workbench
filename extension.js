@@ -103,6 +103,10 @@ function activate(context) {
 	context.subscriptions.push(
 		vscode.lm.registerTool('artifact-workbench_create_category', new CreateCategoryTool(context, config))
 	);
+
+	context.subscriptions.push(
+		vscode.lm.registerTool('artifact-workbench_remove_category', new RemoveCategoryTool(context, config))
+	);
 }
 
 function generateDataFile(context, config) {
@@ -149,6 +153,33 @@ class CreateCategoryTool {
 			artifactLibrary.addCategory(options.input.category);
 			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Category added successfully"};
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			result = {status: "failed", message};
+		}
+		return new vscode.LanguageModelToolResult([
+			new vscode.LanguageModelTextPart(JSON.stringify(result))
+		]);
+	}
+}
+
+/**
+ * @implements {vscode.LanguageModelTool<object>}
+ */
+class RemoveCategoryTool {
+	constructor(context, config) {
+		this.context = context;
+		this.config = config
+	}
+
+	invoke(options) {
+		
+		let result;
+		try {
+			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
+			artifactLibrary.removeCategory(options.input.category);
+			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			result = {status: "passed", message: "Category removed successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
 			result = {status: "failed", message};

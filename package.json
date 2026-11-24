@@ -53,6 +53,89 @@
             }
           }
         }
+      },
+      {
+        "name": "artifact-workbench_create_artifact",
+        "displayName": "Create Artifact",
+        "modelDescription": "Allows user to create an artifact from provided code. Artifacts will be added to the provided category. Provided category must exist already and may need to be created before using this tool.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "artifactCreateArtifact",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "category name"
+            },
+            "artifact": {
+              "type": "string",
+              "description": "artifact name. e.g. form input (first name), carousel container, carousel-slide"
+            },
+            "type": {
+              "type": "string",
+              "description": "the type of code snippet of the artifact. e.g. html, css, js"
+            },
+            "snippet": {
+              "type": "string",
+              "description": "the code snippet to be included in the artifact"
+            }
+          }
+        }
+      },
+      {
+        "name": "artifact-workbench_modify_artifact",
+        "displayName": "Modify Artifact",
+        "modelDescription": "Allows user to modify an artifact with provided values. Artifacts will be updated with non-null inputs and any null inputs will be ignored.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "artifactModifyArtifact",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "category name"
+            },
+            "artifact": {
+              "type": "string",
+              "description": "artifact name"
+            },
+            "name": {
+              "type": "string",
+              "description": "new artifact name. e.g. form input (first name), carousel container, carousel-slide",
+              "default": null
+            },
+            "type": {
+              "type": "string",
+              "description": "the type of code snippet of the artifact. e.g. html, css, js",
+              "default": null
+            },
+            "snippet": {
+              "type": "string",
+              "description": "the code snippet to be included in the artifact",
+              "default": null
+            }
+          }
+        }
+      },
+      {
+        "name": "artifact-workbench_remove_artifact",
+        "displayName": "Remove Artifact",
+        "modelDescription": "Allows user to remove an artifact from specified category.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "artifactRemoveArtifact",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "category name"
+            },
+            "artifact": {
+              "type": "string",
+              "description": "artifact name. e.g. form input (first name), carousel container, carousel-slide"
+            }
+          }
+        }
       }
     ]
   },

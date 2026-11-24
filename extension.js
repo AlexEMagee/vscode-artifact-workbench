@@ -107,6 +107,14 @@ function activate(context) {
 	context.subscriptions.push(
 		vscode.lm.registerTool('artifact-workbench_remove_category', new RemoveCategoryTool(context, config))
 	);
+
+	context.subscriptions.push(
+		vscode.lm.registerTool('artifact-workbench_create_artifact', new CreateArtifactTool(context, config))
+	);
+
+	context.subscriptions.push(
+		vscode.lm.registerTool('artifact-workbench_remove_artifact', new RemoveArtifactTool(context, config))
+	);
 }
 
 function generateDataFile(context, config) {
@@ -180,6 +188,60 @@ class RemoveCategoryTool {
 			artifactLibrary.removeCategory(options.input.category);
 			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Category removed successfully"};
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			result = {status: "failed", message};
+		}
+		return new vscode.LanguageModelToolResult([
+			new vscode.LanguageModelTextPart(JSON.stringify(result))
+		]);
+	}
+}
+
+/**
+ * @implements {vscode.LanguageModelTool<object>}
+ */
+class CreateArtifactTool {
+	constructor(context, config) {
+		this.context = context;
+		this.config = config
+	}
+
+	invoke(options) {
+		
+		let result;
+		try {
+			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
+			artifactLibrary.addArtifactToCategory(options.input.category, options.input.artifact, options.input.type, options.input.snippet);
+			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			result = {status: "passed", message: "Artifact added successfully"};
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			result = {status: "failed", message};
+		}
+		return new vscode.LanguageModelToolResult([
+			new vscode.LanguageModelTextPart(JSON.stringify(result))
+		]);
+	}
+}
+
+/**
+ * @implements {vscode.LanguageModelTool<object>}
+ */
+class RemoveArtifactTool {
+	constructor(context, config) {
+		this.context = context;
+		this.config = config
+	}
+
+	invoke(options) {
+		
+		let result;
+		try {
+			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
+			artifactLibrary.removeArtifactFromCategory(options.input.category, options.input.artifact);
+			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			result = {status: "passed", message: "Artifact removed successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
 			result = {status: "failed", message};

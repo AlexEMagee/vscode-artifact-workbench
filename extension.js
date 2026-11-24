@@ -119,6 +119,14 @@ function activate(context) {
 	context.subscriptions.push(
 		vscode.lm.registerTool('artifact-workbench_remove_artifact', new RemoveArtifactTool(context, config))
 	);
+
+	context.subscriptions.push(
+		vscode.lm.registerTool('artifact-workbench_copy_artifact', new CopyArtifactTool(context, config))
+	);
+
+	context.subscriptions.push(
+		vscode.lm.registerTool('artifact-workbench_move_artifact', new MoveArtifactTool(context, config))
+	);
 }
 
 function generateDataFile(context, config) {
@@ -273,6 +281,60 @@ class RemoveArtifactTool {
 			artifactLibrary.removeArtifactFromCategory(options.input.category, options.input.artifact);
 			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
 			result = {status: "passed", message: "Artifact removed successfully"};
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			result = {status: "failed", message};
+		}
+		return new vscode.LanguageModelToolResult([
+			new vscode.LanguageModelTextPart(JSON.stringify(result))
+		]);
+	}
+}
+
+/**
+ * @implements {vscode.LanguageModelTool<object>}
+ */
+class CopyArtifactTool {
+	constructor(context, config) {
+		this.context = context;
+		this.config = config
+	}
+
+	invoke(options) {
+		
+		let result;
+		try {
+			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
+			artifactLibrary.copyArtifact(options.input.sourceCategory, options.input.destinationCategory, options.input.artifact);
+			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			result = {status: "passed", message: "Artifact copied successfully"};
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			result = {status: "failed", message};
+		}
+		return new vscode.LanguageModelToolResult([
+			new vscode.LanguageModelTextPart(JSON.stringify(result))
+		]);
+	}
+}
+
+/**
+ * @implements {vscode.LanguageModelTool<object>}
+ */
+class MoveArtifactTool {
+	constructor(context, config) {
+		this.context = context;
+		this.config = config
+	}
+
+	invoke(options) {
+		
+		let result;
+		try {
+			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
+			artifactLibrary.moveArtifact(options.input.sourceCategory, options.input.destinationCategory, options.input.artifact);
+			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			result = {status: "passed", message: "Artifact moved successfully"};
 		} catch (error) {
 			const message = error instanceof Error ? error.message : String(error);
 			result = {status: "failed", message};

@@ -138,6 +138,56 @@
             }
           }
         }
+      },
+      {
+        "name": "artifact-workbench_copy_artifact",
+        "displayName": "Copy Artifact to Category",
+        "modelDescription": "Allows user to copy an artifact from one specified category to another. The artifact will be replicated to the destination category and remain in the source category as well.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "artifactCopyArtifact",
+        "inputSchema": {
+          "type": "object",
+          "required": ["sourceCategory", "destinationCategory", "artifact"],
+          "properties": {
+            "sourceCategory": {
+              "type": "string",
+              "description": "source category name"
+            },
+            "destinationCategory": {
+              "type": "string",
+              "description": "destination category name"
+            },
+            "artifact": {
+              "type": "string",
+              "description": "artifact name. e.g. form input (first name), carousel container, carousel-slide"
+            }
+          }
+        }
+      },
+      {
+        "name": "artifact-workbench_move_artifact",
+        "displayName": "Move Artifact to Category",
+        "modelDescription": "Allows user to move an artifact from one specified category to another. The artifact will be added to the destination category and removed from the source category.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "artifactMoveArtifact",
+        "inputSchema": {
+          "type": "object",
+          "required": ["sourceCategory", "destinationCategory", "artifact"],
+          "properties": {
+            "sourceCategory": {
+              "type": "string",
+              "description": "source category name"
+            },
+            "destinationCategory": {
+              "type": "string",
+              "description": "destination category name"
+            },
+            "artifact": {
+              "type": "string",
+              "description": "artifact name. e.g. form input (first name), carousel container, carousel-slide"
+            }
+          }
+        }
       }
     ]
   },

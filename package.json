@@ -20,6 +20,24 @@
         "command": "artifact-workbench.createFromSelection",
         "title": "Create from Selection"
       }
+    ],
+    "languageModelTools": [
+      {
+        "name": "artifact-workbench_create_category",
+        "displayName": "Create Category",
+        "modelDescription": "Allows user to create a category for artifacts. Categories should be a container for a specific element like a contact form with modular input fields or a cta banner that includes styling, javascript, and html content. If a specified category already exists, try a different name as name must be unique to each category.If a category exists that is relevant even if the name is different, artifacts should be added to the existing category without creating a new category to cut down on duplicate categories.",
+        "canBeReferencedInPrompt": true,
+        "toolReferenceName": "artifactCreateCategory",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "category name"
+            }
+          }
+        }
+      }
     ]
   },
   "scripts": {

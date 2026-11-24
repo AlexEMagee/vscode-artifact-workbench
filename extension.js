@@ -99,6 +99,10 @@ function activate(context) {
 	});
 
 	context.subscriptions.push(disposable);
+
+	context.subscriptions.push(
+		vscode.lm.registerTool('artifact-workbench_create_category', new CreateCategoryTool(context, config))
+	);
 }
 
 function generateDataFile(context, config) {
@@ -127,6 +131,33 @@ function saveArtifactLibrary(dataFile, artifactLibrary) {
 
 // This method is called when your extension is deactivated
 function deactivate() {}
+
+/**
+ * @implements {vscode.LanguageModelTool<object>}
+ */
+class CreateCategoryTool {
+	constructor(context, config) {
+		this.context = context;
+		this.config = config
+	}
+
+	invoke(options) {
+		
+		let result;
+		try {
+			const artifactLibrary = generateArtifactLibrary(this.context, this.config);
+			artifactLibrary.addCategory(options.input.category);
+			saveArtifactLibrary(generateDataFile(this.context, this.config), artifactLibrary);
+			result = {status: "passed", message: "Category added successfully"};
+		} catch (error) {
+			const message = error instanceof Error ? error.message : String(error);
+			result = {status: "failed", message};
+		}
+		return new vscode.LanguageModelToolResult([
+			new vscode.LanguageModelTextPart(JSON.stringify(result))
+		]);
+	}
+}
 
 module.exports = {
 	activate,
